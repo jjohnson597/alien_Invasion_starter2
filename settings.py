@@ -27,5 +27,6 @@ class Settings:
         self.alien_height = 40
         self.alien_speed = 2
         self.alien_direction = 1
+        self.alien_drop_speed = 40
         
 

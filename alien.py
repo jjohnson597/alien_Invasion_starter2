@@ -29,6 +29,8 @@ class Alien(Sprite):
 
         if self.check_edges():
             self.settings.alien_direction *= -1
+            self.y += self.settings.alien_drop_speed
+            self.rect.y = self.y
             
         self.x += temp_speed * self.settings.alien_direction
         self.rect.x = self.x    
