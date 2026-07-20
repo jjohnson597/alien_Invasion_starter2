@@ -43,3 +43,7 @@ class Ship:
 
     def fire(self):
         return self.arsenal.fire_bullet()
+    
+    def check_collisions(self, alien_group):
+        """Return True if the ship collides with an alien."""
+        return pygame.sprite.spritecollideany(self,alien_group)

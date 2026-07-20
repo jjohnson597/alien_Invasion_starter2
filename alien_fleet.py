@@ -126,6 +126,21 @@ class AlienFleet:
         for alien in self.aliens:
             alien.y += self.alien_drop_speed
             alien.rect.y = alien.y
+    
+    def check_collisions(self, other_group):
+        """Check collisions between aliens and another sprite group."""
+        return pygame.sprite.groupcollide(self.aliens,other_group,True,True)
+
+
+    def check_fleet_bottom(self):
+        """Return True if an alien reaches the bottom of the screen."""
+        screen_rect = self.game.screen.get_rect()
+
+        for alien in self.aliens:
+            if alien.rect.bottom >= screen_rect.bottom:
+                return True
+
+        return False
 
     def draw(self):
         """Draw every alien."""

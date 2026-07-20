@@ -16,6 +16,7 @@ class Settings:
 
         self.bullet_file = pathlib.Path.cwd() / "Assets" / "images" / "laserBlast.png"
         self.laser_sound = pathlib.Path.cwd() / "Assets" / "sound" / "laser.mp3"
+        self.impact_sound = pathlib.Path.cwd()/ "Assets"/ "sound"/ "impactSound.mp3"
         self.bullet_width = 25
         self.bullet_height = 80
         self.bullet_speed = 7
