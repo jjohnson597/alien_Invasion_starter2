@@ -71,9 +71,13 @@ class AlienInvasion:
 
         if self.alien_fleet.check_destroyed_status():
             self._reset_level()
+            self.settings.increase_difficulty() # Update game stats level. # Update HUD view.
+
 
     def restart_game(self):
         """Reset the game and begin active gameplay."""
+        self.settings.initialize_dynamic_settings()
+        
         self.game_stats.ships_left = self.settings.ship_limit
 
         self._reset_level()

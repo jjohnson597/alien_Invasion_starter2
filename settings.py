@@ -43,7 +43,7 @@ class Settings:
         self.bullet_speed = 7
         self.bullet_amount = 5
 
-        self.alien_speed = 2
+        self.alien_speed = 1
         self.alien_drop_speed = 40
 
     def increase_difficulty(self):
