@@ -6,6 +6,7 @@ from arsenal import Arsenal
 from alien_fleet import AlienFleet
 from game_stats import GameStats
 from button import Button
+from hud import HUD
 
 
 
@@ -13,30 +14,50 @@ class AlienInvasion:
 
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
 
         self.settings = Settings()
-        self.game_stats = GameStats(self)
 
-        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        # Create the screen before any objects that use it.
+        self.screen = pygame.display.set_mode(
+            (
+                self.settings.screen_width,
+                self.settings.screen_height
+            )
+        )
         pygame.display.set_caption(self.settings.name)
 
-        self.bg_image = pygame.image.load(self.settings.bg_file)
-        self.bg = pygame.transform.scale(self.bg_image, (self.settings.screen_width, self.settings.screen_height))
+        self.bg_image = pygame.image.load(
+            self.settings.bg_file
+        )
+        self.bg = pygame.transform.scale(
+            self.bg_image,
+            (
+                self.settings.screen_width,
+                self.settings.screen_height
+            )
+        )
 
         self.running = True
         self.clock = pygame.time.Clock()
 
-        pygame.mixer.init()
-        self.laser_sound = pygame.mixer.Sound(self.settings.laser_sound)
-        self.laser_sound.set_volume(0.7)
+        self.game_stats = GameStats(self)
 
         self.ship = Ship(self, Arsenal(self))
         self.alien_fleet = AlienFleet(self)
+        self.hud = HUD(self)
 
         self.play_button = Button(self, "Play")
         self.game_active = False
 
-        self.impact_sound = pygame.mixer.Sound(self.settings.impact_sound)
+        self.laser_sound = pygame.mixer.Sound(
+            self.settings.laser_sound
+        )
+        self.laser_sound.set_volume(0.7)
+
+        self.impact_sound = pygame.mixer.Sound(
+            self.settings.impact_sound
+        )
         self.impact_sound.set_volume(0.7)
 
 
@@ -70,11 +91,14 @@ class AlienInvasion:
             self.impact_sound.fadeout(500)
 
             self.game_stats.update(collisions)
+            self.hud.prep_score()
+            self.hud.prep_hi_score()
 
         if self.alien_fleet.check_destroyed_status():
             self._reset_level()
             self.settings.increase_difficulty()
             self.game_stats.update_level()
+            self.hud.prep_level()
 
 
     def restart_game(self):
@@ -82,7 +106,7 @@ class AlienInvasion:
         self.settings.initialize_dynamic_settings()
 
         self.game_stats.reset_stats()
-
+        self.hud.prep_images()
         self._reset_level()
 
         self.game_active = True
@@ -96,10 +120,10 @@ class AlienInvasion:
         sys.exit()
 
     def _check_game_status(self):
-        """Subtract a ship or stop the game when none remain."""
+        """Subtract a ship or stop the game."""
+        self.game_stats.ships_left -= 1
 
         if self.game_stats.ships_left > 0:
-            self.game_stats.ships_left -= 1
             self._reset_level()
             pygame.time.wait(500)
         else:
@@ -117,8 +141,10 @@ class AlienInvasion:
 
     def _update_screen(self):
         self.screen.blit(self.bg, (0, 0))
+
         self.ship.draw()
         self.alien_fleet.draw()
+        self.hud.draw()
 
         if not self.game_active:
             self.play_button.draw()
