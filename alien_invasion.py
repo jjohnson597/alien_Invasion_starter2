@@ -15,7 +15,7 @@ class AlienInvasion:
         pygame.init()
 
         self.settings = Settings()
-        self.game_stats = GameStats(self.settings.ship_limit)
+        self.game_stats = GameStats(self)
 
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption(self.settings.name)
@@ -69,21 +69,31 @@ class AlienInvasion:
             self.impact_sound.play()
             self.impact_sound.fadeout(500)
 
+            self.game_stats.update(collisions)
+
         if self.alien_fleet.check_destroyed_status():
             self._reset_level()
-            self.settings.increase_difficulty() # Update game stats level. # Update HUD view.
+            self.settings.increase_difficulty()
+            self.game_stats.update_level()
 
 
     def restart_game(self):
         """Reset the game and begin active gameplay."""
         self.settings.initialize_dynamic_settings()
-        
-        self.game_stats.ships_left = self.settings.ship_limit
+
+        self.game_stats.reset_stats()
 
         self._reset_level()
 
         self.game_active = True
         pygame.mouse.set_visible(False)
+
+    def _quit_game(self):
+        """Save scores and close the game."""
+        self.game_stats.save_scores()
+        self.running = False
+        pygame.quit()
+        sys.exit()
 
     def _check_game_status(self):
         """Subtract a ship or stop the game when none remain."""
@@ -119,9 +129,7 @@ class AlienInvasion:
     def check_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                self.running = False
-                pygame.quit()
-                sys.exit()
+                self._quit_game()
             elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
@@ -155,9 +163,7 @@ class AlienInvasion:
                 self.laser_sound.play()
                 self.laser_sound.fadeout(250)
         elif event.key == pygame.K_q:
-            self.running = False
-            pygame.quit()
-            sys.exit()
+            self._quit_game()
 
 
 if __name__ == '__main__':

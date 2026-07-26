@@ -32,6 +32,7 @@ class Settings:
         self.HUD_font_size = 20
         self.difficulty_scale = 1.1
         self.initialize_dynamic_settings()
+        self.scores_file = (pathlib.Path.cwd()/ "Assets"/ "file"/ "scores.json")
 
     def initialize_dynamic_settings(self):
         """Initialize settings that change during gameplay."""
@@ -45,10 +46,13 @@ class Settings:
 
         self.alien_speed = 1
         self.alien_drop_speed = 40
+        self.alien_points = 50
 
     def increase_difficulty(self):
-        """Increase the speed settings for a new level."""
+        """Increase settings after completing a level."""
         self.ship_speed *= self.difficulty_scale
         self.bullet_speed *= self.difficulty_scale
         self.alien_speed *= self.difficulty_scale
+        self.alien_points = int(self.alien_points * self.difficulty_scale)
+        
         
