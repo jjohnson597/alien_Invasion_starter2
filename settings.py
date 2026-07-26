@@ -30,5 +30,11 @@ class Settings:
         self.alien_speed = 2
         self.alien_direction = 1
         self.alien_drop_speed = 40
-        
 
+        self.font_file = pathlib.Path.cwd()/ "Assets"/ "Fonts"/ "Silkscreen"/ "Silkscreen-Regular.ttf"
+        self.button_width = 200
+        self.button_height = 50
+        self.button_color = (0, 135, 50)
+        self.text_color = (255, 255, 255)
+        self.button_font_size = 48
+        self.HUD_font_size = 20
